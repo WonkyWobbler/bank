@@ -1,0 +1,51 @@
+from sklearn.neural_network import MLPClassifier, MLPRegressor
+import numpy as np
+from tabulate import tabulate
+import matplotlib.pyplot as plt
+import csv
+
+dato = []
+closing_price = []
+opening_price = []
+Y = []
+RSI10 = []
+RSI30 = []
+RSI90 = []
+RSI10pred = []
+
+def generatey():
+    if pos <= 30:
+        return 0
+    elif pos >= 70:
+        return 2
+    else:
+        return 1
+
+# Row navne er
+# Date(0),Opening price(1),Closing price(2),avg_gain10(3),abs_gain10(4),avg_loss10(5),abs_loss10(6),avg_gain30(7),abs_gain30(8),avg_loss30(9),abs_loss30(10),avg_gain90(11),abs_gain90(12),avg_loss90(12),abs_loss90(13),RSI10(14),RSI 30(15),RSI 90(16)
+# Her importer vi vores CSV fil
+# MAERSK.csv er den fulde fil, test.csv er en test fil med 10 linjer data
+with open('RSItest2.csv', 'r') as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    for row in reader:
+        dato.append(row[0])
+        opening_price.append(int(row[1]))
+        closing_price.append(int(row[2]))
+        RSI10.append(int(row[14]))
+        RSI30.append(row[15])
+        RSI90.append(row[16])
+
+print(RSI10)
+#for _ in range(5000):
+#   x1 = (random.uniform(-2, 2))
+#   x2 = (random.uniform(-2, 2))
+#    X.append([x1,x2])
+
+#for pos in X:
+#    y.append(generatey(pos[0],pos[1]))
+
+
+for pos in RSI10:
+    RSI10pred.append(generatey())
+
+print(RSI10pred)

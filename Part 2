@@ -1,0 +1,50 @@
+import csv
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+dato = []
+closing_price = []
+opening_price = []
+Y = []
+RSI10 = []
+RSI30 = []
+RSI90 = []
+
+
+# Row navne er
+# Date(0),Opening price(1),Closing price(2),avg_gain10(3),avg_loss10(4),avg_gain30(5),avg_loss30(6),avg_gain90(7),avg_loss90(8),RSI10(9),RSI 30(10),RSI 90(11)
+
+# Her importer vi vores CSV fil
+# MAERSK.csv er den fulde fil, test.csv er en test fil med 10 linjer data
+with open('test.csv', 'r') as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    for row in reader:
+        dato.append(row[0])
+        opening_price.append(int(row[1]))
+        closing_price.append(int(row[2]))
+        RSI10.append(row[9])
+        RSI30.append(row[10])
+        RSI90.append(row[11])
+
+testdato = [dato[2]]
+print(testdato)
+print(dato)
+print(closing_price)
+print(opening_price)
+print(RSI10)
+print(RSI30)
+print(RSI90)
+
+axes = plt.axes()
+axes.set_ylim([4500,6500])
+plt.xlabel("Dato")
+plt.ylabel("Pris")
+plt.plot(dato, opening_price, closing_price)
+plt.xticks(rotation=90)
+line1, = plt.plot(opening_price)
+line2, = plt.plot(closing_price)
+line1.set_label("Opening price")
+line2.set_label("Closing price")
+plt.legend()
+plt.show()

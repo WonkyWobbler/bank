@@ -10,8 +10,8 @@ closing_price = []
 opening_price = []
 Y = []
 RSI10 = []
-RSI30 = []
-RSI90 = []
+#RSI30 = []
+#RSI90 = []
 RSI10pred = []
 Tal = []
 Koordinat = []
@@ -29,15 +29,15 @@ def generatey():
 # Date(0),Opening price(1),Closing price(2),avg_gain10(3),abs_gain10(4),avg_loss10(5),abs_loss10(6),avg_gain30(7),abs_gain30(8),avg_loss30(9),abs_loss30(10),avg_gain90(11),abs_gain90(12),avg_loss90(12),abs_loss90(13),RSI10(14),RSI 30(15),RSI 90(16)
 # Her importer vi vores CSV fil
 # MAERSK.csv er den fulde fil, test.csv er en test fil med 10 linjer data
-with open('RSItest2.csv', 'r') as csvfile:
+with open('2015.csv', 'r') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
         dato.append(row[0])
         opening_price.append(int(row[1]))
         closing_price.append(int(row[2]))
         RSI10.append(int(row[14]))
-        RSI30.append(row[15])
-        RSI90.append(row[16])
+        #RSI30.append(row[15])
+        #RSI90.append(row[16])
 
 for i in range(len(dato)):
     x1 = i+1
@@ -45,10 +45,7 @@ for i in range(len(dato)):
     Tal.append([x1,x2])
 
 print(Tal)
-
-
 print(len(Tal))
-
 
 def merge(Tal, RSI10):
     merged_list = [(Tal[k], RSI10[k]) for k in range(0, len(Tal))]
@@ -88,7 +85,7 @@ clf = MLPRegressor(
     verbose=False,
     momentum=0.8, #skridtstørrelse
     n_iter_no_change=500,
-    max_iter=5000,
+    max_iter=10000,
     solver='adam',
     learning_rate='adaptive',
     alpha=1e-4,
@@ -107,7 +104,7 @@ print("Output for the input points we just trained:")
 print(np.around(Tal,2))
 print(res)
 print("Output for other points")
-T=[[71, 94.],[85, 15.],[98,32.],[117,75.]]
+T=[[62, 69.]]
 print(np.around(T,2))
 res=clf.predict(T).round(2)
 print(res)
@@ -155,9 +152,9 @@ x = np.arange(x1min, x1max, x1step)
 y = np.arange(x2min, x2max, x2step)
 X, Y = np.meshgrid(x, y)
 ax.plot_surface(X, Y, Dp)
-ax.set_xlabel('x1')
-ax.set_ylabel('x2')
-ax.set_zlabel('Y')
+ax.set_xlabel('RSI 10')
+ax.set_ylabel('Dag')
+ax.set_zlabel('RSI Prediction')
 plt.show()
 
 print("Done now.")

@@ -8,8 +8,6 @@ closing_price = []
 opening_price = []
 Y = []
 RSI10 = []
-RSI30 = []
-RSI90 = []
 
 
 # Row navne er
@@ -23,28 +21,44 @@ with open('test.csv', 'r') as csvfile:
         dato.append(row[0])
         opening_price.append(int(row[1]))
         closing_price.append(int(row[2]))
-        RSI10.append(row[9])
-        RSI30.append(row[10])
-        RSI90.append(row[11])
+        RSI10.append(row[3])
 
-testdato = [dato[2]]
-print(testdato)
 print(dato)
 print(closing_price)
 print(opening_price)
 print(RSI10)
-print(RSI30)
-print(RSI90)
 
-axes = plt.axes()
-axes.set_ylim([4500,6500])
-plt.xlabel("Dato")
-plt.ylabel("Pris")
-plt.plot(dato, opening_price, closing_price)
-plt.xticks(rotation=90)
-line1, = plt.plot(opening_price)
-line2, = plt.plot(closing_price)
-line1.set_label("Opening price")
-line2.set_label("Closing price")
-plt.legend()
+# Rækkefølgen af listerne vendes om for at kunne tegne grafen i kronogisk rækkefølge.
+closing_price.reverse()
+dato.reverse()
+opening_price.reverse()
+
+# Her plottes grafen.
+fig, ax1 = plt.subplots()
+
+
+
+# Her defineres X og Y1 aksen i plottet
+color = 'tab:red'
+ax1.set_xlabel('Dato')
+ax1.set_ylabel('Opening price', color=color)
+ax1.plot(dato, opening_price, color=color)
+ax1.set_xticklabels(dato, rotation=90)
+ax1.set_xlim(533,563)
+ax1.set_ylim(4000,7000)
+
+# Her defineres at Y2 skal være spejlvendt akse fra Y1
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+# Her skabes Y2 aksen som viser RSI 'en
+color = 'tab:blue'
+ax2.set_ylabel('Closing price', color=color)  # we already handled the x-label with ax1
+ax2.plot(dato, closing_price, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+ax2.set_ylim(4000,7000)
+
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
+
+avg_gain10 = abs((((sum(opening_price[-10:]))-sum(closing_price[-10:]))/10))
+print(avg_gain10)

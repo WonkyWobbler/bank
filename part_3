@@ -12,9 +12,8 @@ Y = []
 RSI10 = []
 RSI10pred = []
 Tal = []
-Koordinat = []
 
-# Her genereres vores prediction.
+# Her genereres en RSI prediction, som beskriver hvorvidt kunden skal holde, sælge eller købe aktierne i løbet af dagen.
 def generatey():
     if pos <= 30:
         return 0
@@ -23,36 +22,36 @@ def generatey():
     else:
         return 1
 
-with open('RSI1.csv', 'r') as csvfile:
+# Her åbnes CSV filen, samt importerer data
+with open('test.csv', 'r') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
         dato.append(row[0])
         opening_price.append(int(row[1]))
         closing_price.append(int(row[2]))
-        RSI10.append(int(row[14]))
-        #RSI30.append(row[15])
-        #RSI90.append(row[16])
 
+        avg_gain10 = abs((((sum(opening_price[-10:])) - sum(closing_price[-10:])) / 10))
+        #print(avg_gain10)
+        avg_loss10 = abs((((sum(opening_price[-10:])) - sum(closing_price[-11:-1])) / 10))
+        #print(avg_loss10)
+        RSI10t = int((100 - (100 / (1 + (avg_gain10 / avg_loss10)))))
+        RSI10.append(RSI10t)
+        #print(RSI10)
+
+# Her beregnes RSI10
+
+
+# Her genereres koordinater til 3d plottet, det er en kombination af RSI tal, samt dato i tal (1, 2 ...)
 for i in range(len(dato)):
     x1 = i+1
     x2 = RSI10[i]
     Tal.append([x1,x2])
 
-print(Tal)
-print(len(Tal))
-
-def merge(Tal, RSI10):
-    merged_list = [(Tal[k], RSI10[k]) for k in range(0, len(Tal))]
-    Koordinat.append(merged_list)
-    return merged_list
-
+# RSI tallet køres igennem RSI-prediction funktionen
 for pos in RSI10:
     RSI10pred.append(generatey())
 
-print(RSI10pred)
-print(len(RSI10pred))
-
-#This sets up the network
+# This sets up the network
 clf = MLPRegressor(
     tol=1e-9,
     activation='logistic',
@@ -66,13 +65,13 @@ clf = MLPRegressor(
     hidden_layer_sizes=(3),
     random_state=1) # create ANN
 
-#This trains the network
+# This trains the network
 r=clf.fit(Tal, RSI10pred)   #train ANN
 print(r)
 
-#After training (fitting), the network can predict output for new samples:
+# After training (fitting), the network can predict output for new samples:
 print("Result of training")
-#First we check the trained points, to see how accurate the learning have been:
+# First we check the trained points, to see how accurate the learning have been:
 res=clf.predict(Tal).round(2)
 print("Output for the input points we just trained:")
 print(np.around(Tal,2))
@@ -117,7 +116,7 @@ for r in range(0,granularity,1):
         x2 += x2step
     x1 += x1step
 
-#preparing the 3D plot
+# preparing the 3D plot
 from mpl_toolkits.mplot3d import Axes3D
 # Axes3D import has side effects, it enables using projection='3d' in add_subplot
 fig = plt.figure()
@@ -126,28 +125,32 @@ x = np.arange(x1min, x1max, x1step)
 y = np.arange(x2min, x2max, x2step)
 X, Y = np.meshgrid(x, y)
 ax.plot_surface(X, Y, Dp)
+# Her plottes labels for vores data
 ax.set_xlabel('RSI 10')
 ax.set_ylabel('Dag')
 ax.set_zlabel('RSI Prediction')
 plt.show()
 
+# Rækkefølgen af listerne vendes om for at kunne tegne grafen i kronogisk rækkefølge.
 RSI10.reverse()
 Tal.reverse()
 dato.reverse()
 opening_price.reverse()
+closing_price.reverse()
 
+# Her plottes grafen.
 fig, ax1 = plt.subplots()
 
-#Her defineres X og Y1 aksen i plottet
+# Her defineres X og Y1 aksen i plottet
 color = 'tab:red'
-#ax1.set_xlabel('dato')
+ax1.set_xlabel('dato')
 ax1.set_ylabel('Opening price', color=color)
 ax1.plot(dato, opening_price, color=color)
 ax1.set_xticklabels(dato, rotation=90)
-ax1.set_xlim(1200,1225)
+ax1.set_xlim(533,563)
 ax1.set_ylim(4000,7000)
 
-# Her definerer vi at Y2 skal være spejlvendt akse fra Y1
+# Her defineres at Y2 skal være spejlvendt akse fra Y1
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
 # Her skabes Y2 aksen som viser RSI 'en
@@ -160,3 +163,27 @@ ax2.set_ylim(0,100)
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
 
+fig, ax1 = plt.subplots()
+
+# Her plottes opening og closing price listerne i et diagram.
+# Her defineres X og Y1 aksen i plottet
+color = 'tab:red'
+ax1.set_xlabel('Dato')
+ax1.set_ylabel('Opening price', color=color)
+ax1.plot(dato, opening_price, color=color)
+ax1.set_xticklabels(dato, rotation=90)
+ax1.set_xlim(533,563)
+ax1.set_ylim(4000,7000)
+
+# Her defineres at Y2 skal være spejlvendt akse fra Y1
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+# Her skabes Y2 aksen som viser RSI 'en
+color = 'tab:blue'
+ax2.set_ylabel('Closing price', color=color)
+ax2.plot(dato, closing_price, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+ax2.set_ylim(4000,7000)
+
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
+plt.show()

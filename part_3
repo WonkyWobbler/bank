@@ -10,8 +10,6 @@ closing_price = []
 opening_price = []
 Y = []
 RSI10 = []
-#RSI30 = []
-#RSI90 = []
 RSI10pred = []
 Tal = []
 Koordinat = []
@@ -25,11 +23,7 @@ def generatey():
     else:
         return 1
 
-# Row navne er
-# Date(0),Opening price(1),Closing price(2),avg_gain10(3),abs_gain10(4),avg_loss10(5),abs_loss10(6),avg_gain30(7),abs_gain30(8),avg_loss30(9),abs_loss30(10),avg_gain90(11),abs_gain90(12),avg_loss90(12),abs_loss90(13),RSI10(14),RSI 30(15),RSI 90(16)
-# Her importer vi vores CSV fil
-# MAERSK.csv er den fulde fil, test.csv er en test fil med 10 linjer data
-with open('2015.csv', 'r') as csvfile:
+with open('RSI1.csv', 'r') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
         dato.append(row[0])
@@ -57,26 +51,6 @@ for pos in RSI10:
 
 print(RSI10pred)
 print(len(RSI10pred))
-
-#print(RSI10pred)
-#print(X)
-
-#X.append([Tal,RSI10pred])
-#print(X)
-
-#axes = plt.axes()
-#axes.set_ylim([4500,10000])
-#plt.xlabel("Dato")
-#plt.ylabel("Pris")
-#plt.plot(dato, opening_price, closing_price)
-#plt.xticks(rotation=90)
-#line1, = plt.plot(opening_price)
-#line2, = plt.plot(closing_price)
-#line1.set_label("Opening price")
-#line2.set_label("Closing price")
-#plt.legend()
-#plt.show()
-
 
 #This sets up the network
 clf = MLPRegressor(
@@ -157,4 +131,32 @@ ax.set_ylabel('Dag')
 ax.set_zlabel('RSI Prediction')
 plt.show()
 
-print("Done now.")
+RSI10.reverse()
+Tal.reverse()
+dato.reverse()
+opening_price.reverse()
+
+fig, ax1 = plt.subplots()
+
+#Her defineres X og Y1 aksen i plottet
+color = 'tab:red'
+#ax1.set_xlabel('dato')
+ax1.set_ylabel('Opening price', color=color)
+ax1.plot(dato, opening_price, color=color)
+ax1.set_xticklabels(dato, rotation=90)
+ax1.set_xlim(1200,1225)
+ax1.set_ylim(4000,7000)
+
+# Her definerer vi at Y2 skal være spejlvendt akse fra Y1
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+# Her skabes Y2 aksen som viser RSI 'en
+color = 'tab:blue'
+ax2.set_ylabel('RSI', color=color)  # we already handled the x-label with ax1
+ax2.plot(dato, RSI10, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+ax2.set_ylim(0,100)
+
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
+plt.show()
+

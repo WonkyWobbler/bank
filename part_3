@@ -1,6 +1,5 @@
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 import numpy as np
-from tabulate import tabulate
 import matplotlib.pyplot as plt
 import csv
 

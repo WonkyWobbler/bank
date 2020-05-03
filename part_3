@@ -91,6 +91,7 @@ print("end")
 print("Plotting the Error curve.")
 plt.semilogy(clf.loss_curve_)
 plt.show()
+plt.savefig('Error curve.png')
 #input("Press a key")
 
 # To understand the result of the network, it can help to see the decision boundaries.
@@ -129,6 +130,7 @@ ax.set_xlabel('RSI 10')
 ax.set_ylabel('Dag')
 ax.set_zlabel('RSI Prediction')
 plt.show()
+plt.savefig('3d.png')
 
 # Rækkefølgen af listerne vendes om for at kunne tegne grafen i kronogisk rækkefølge.
 RSI10.reverse()
@@ -161,6 +163,7 @@ ax2.set_ylim(0,100)
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
+plt.savefig('RSI vs Opening price.png')
 
 fig, ax1 = plt.subplots()
 
@@ -186,3 +189,4 @@ ax2.set_ylim(4000,7000)
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
+plt.savefig('Opening vs closing price.png')
